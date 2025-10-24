@@ -1,0 +1,63 @@
+# .gitignore para o projeto clinicas-2
+# Ignora ambientes virtuais, artefatos do Python, notebooks e arquivos de IDE/OS
+
+## Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+## Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+## Jupyter
+.ipynb_checkpoints/
+
+## Ignore todo o conteúdo da pasta data/ (não enviar dados sensíveis / grandes)
+# Se quiser manter a pasta no repositório, coloque um arquivo vazio `data/.gitkeep`
+# e remova a negação abaixo. Atualmente tudo dentro de data/ será ignorado.
+/data/*
+!/data/.gitkeep
+
+## Output gerado
+/output/
+*.xlsx
+
+## IDEs / editors
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Testing / coverage / caches
+.pytest_cache/
+pytest_cache/
+.mypy_cache/
+.pytype/
+htmlcov/
+coverage.xml
+.coverage
+
+## Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+## Environment variables and secrets
+.env
+.env.*
+
+## Logs
+*.log
+
+## Misc
+pip-log.txt
+pip-delete-this-directory.txt
+ 

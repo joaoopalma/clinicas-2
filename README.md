@@ -1,1 +1,1 @@
-# clinicas-2
+# dir-clin-2
