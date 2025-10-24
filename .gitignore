@@ -20,6 +20,12 @@ __pycache__/
 # e remova a negação abaixo. Atualmente tudo dentro de data/ será ignorado.
 /data/*
 !/data/.gitkeep
+/data/*.csv
+/data/*.xlsx
+/entrega6/*.xlsx
+/entrega6/*.csv
+/entrega5/*.xlsx
+/entrega5/*.csv
 
 ## Output gerado
 /output/
