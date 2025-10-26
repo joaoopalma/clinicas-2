@@ -62,11 +62,11 @@ jupyter notebook entrega5_clinicas_limpo.ipynb
 ```
 
 Execute todas as células. Isso irá:
-- Analisar o dataset completo (~10.000 casos)
+- Analisar o dataset completo (~19.000 casos)
 - Aplicar sistema de scoring para identificar casos de crédito consignado
 - Gerar arquivo `output/output.xlsx` com os IDs dos casos filtrados
 
-**Saída esperada:** ~1.500 casos de crédito consignado identificados
+**Saída esperada:** ~8.000 casos de crédito consignado identificados
 
 #### Passo 2: Extrair Informações Estruturadas (Entrega 6)
 
@@ -75,13 +75,18 @@ cd entrega6
 jupyter notebook entrega6_v2.ipynb
 ```
 
-Execute todas as células. Isso irá:
-- Carregar apenas os casos filtrados da Entrega 5
-- Extrair 7 campos estruturados de cada caso
-- Gerar arquivo `output.xlsx` com os dados extraídos
-- Salvar `dataset_filtrado.xlsx` para análises futuras
+Execute as células sequencialmente:
 
-**Campos extraídos:**
+**Seções principais:**
+1. **Seções 1-8**: Carregamento de dados e funções de extração
+2. **Seção 9**: Extração básica (7 campos obrigatórios) - gera `output.xlsx`
+3. **Seção 10**: Execução da extração básica
+4. **Seção 10.1** (Opcional): Extração expandida com valores morais/materiais - gera `output_expandido.xlsx`
+5. **Seção 11**: Análise estatística descritiva e visualizações
+6. **Seção 12**: Geração de relatório consolidado - gera `relatorio.xlsx`
+7. **Seção 13**: Verificação de sanidade e resumo final
+
+**Campos extraídos (básicos - 7 colunas):**
 - `cd_atendimento`: ID do caso
 - `nome_empresa`: Nome da empresa no polo passivo
 - `cnpj`: CNPJ válido (14 dígitos)
@@ -89,6 +94,15 @@ Execute todas as células. Isso irá:
 - `dt_distribuicao`: Data de distribuição (YYYY-MM-DD)
 - `tipo_vara`: JE (Juizado Especial) ou G1 (Vara Comum)
 - `uf`: Unidade Federativa
+
+**Campos adicionais (extração expandida - 13 colunas):**
+- Todos os campos básicos acima
+- `valor_moral`: Valor de danos morais extraído
+- `valor_material`: Valor de danos materiais extraído
+- `has_minimo`: Flag "não inferior a"
+- `has_em_dobro`: Flag "em dobro"
+- `has_ate`: Flag "até"
+- `evidencia`: Trecho de texto evidenciando a extração
 
 ---
 
@@ -116,7 +130,7 @@ Execute todas as células. Isso irá:
 
 ### Entrega 6: Extração de Informações Estruturadas
 
-**Objetivo:** Extrair dados relevantes dos casos de crédito consignado identificados.
+**Objetivo:** Extrair dados relevantes dos casos de crédito consignado identificados e gerar análises estatísticas.
 
 **Técnicas aplicadas:**
 
@@ -135,36 +149,58 @@ Execute todas as células. Isso irá:
    - Priorização de valores próximos ao label "valor da causa"
    - Validação de razoabilidade (R$ 100 - R$ 10.000.000)
 
-4. **Extração de Data de Distribuição:**
+4. **Extração de Valores de Danos Morais e Materiais:**
+   - Busca contextual em janelas de ±100 caracteres ao redor de "danos morais"/"danos materiais"
+   - Extração de valores em formato brasileiro (R$ 1.234,56)
+   - Detecção de flags qualificadores: "não inferior a", "em dobro", "até"
+   - Armazenamento de evidência textual para validação
+
+5. **Extração de Data de Distribuição:**
    - Suporte a múltiplos formatos (DD/MM/YYYY, YYYY-MM-DD)
    - Priorização de datas próximas a "distribuição" ou "autuação"
    - Normalização para formato ISO (YYYY-MM-DD)
 
-5. **Classificação de Tipo de Vara:**
+6. **Classificação de Tipo de Vara:**
    - Busca por "juizado especial" ou "JECC"
    - Classificação binária: JE (Juizado Especial) ou G1 (Vara Comum)
 
-6. **Extração de UF:**
+7. **Extração de UF:**
    - Busca por tokens de 2 letras maiúsculas
    - Validação contra lista de UFs brasileiras
+
+**Análises Estatísticas:**
+- Estatísticas descritivas (count, mean, median, std, min, p25, p75, max)
+- Histogramas de distribuição de valores morais e materiais
+- Boxplots de valores por tipo de vara
+- Análise de flags e qualificadores textuais
 
 **Tratamento de Dados:**
 - Limpeza de caracteres de controle para compatibilidade com Excel
 - Normalização de acentos e espaços em branco
 - Validação de tipos de dados (float para valores, string para datas)
+- Aplicação automática de limpar_para_excel() em todos os exports
 
 **Resultados:**
 - Taxa de extração CNPJ: ~70%
-- Taxa de extração Valor: ~80%
+- Taxa de extração Valor Causa: ~80%
 - Taxa de extração Data: ~75%
 - Taxa de extração UF: ~95%
 - Taxa de extração Tipo Vara: 100%
+- Taxa de extração Valores Morais: ~60%
+- Taxa de extração Valores Materiais: ~40%
 
 ### Arquivos Gerados
 
 1. **entrega5/output.xlsx**: Lista de IDs dos casos de crédito consignado
-2. **entrega6/output.xlsx**: Dados estruturados extraídos (7 colunas)
-3. **dataset_filtrado.xlsx**: Dataset completo filtrado (todas as colunas originais, apenas casos de crédito consignado)
+2. **entrega6/output.xlsx**: Dados estruturados extraídos (7 colunas obrigatórias)
+3. **entrega6/output_expandido.xlsx**: Dados expandidos com valores morais/materiais (13 colunas)
+4. **entrega6/relatorio.xlsx**: Relatório consolidado com 3 abas:
+   - **Resumo**: métricas gerais, percentuais, médias, contagens por vara/UF
+   - **Descritivo**: estatísticas completas de danos morais e materiais
+   - **Logs_Sanidade**: verificações de qualidade (CNPJs vazios, datas faltantes, etc.)
+5. **entrega6/histogramas_danos.png**: Visualização da distribuição de valores
+6. **entrega6/boxplots_danos_vara.png**: Comparação de valores por tipo de vara
+7. **dataset_filtrado.xlsx**: Dataset completo filtrado (todas as colunas originais, apenas casos de crédito consignado)
 
 ---
 
@@ -172,9 +208,13 @@ Execute todas as células. Isso irá:
 
 - **Python 3.x**: Linguagem principal
 - **pandas**: Manipulação de dados tabulares
+- **numpy**: Operações numéricas e transformações
 - **re (regex)**: Extração de padrões de texto
 - **unicodedata**: Normalização de caracteres
+- **unidecode**: Remoção de acentos
 - **openpyxl**: Leitura/escrita de arquivos Excel
+- **matplotlib**: Geração de gráficos e visualizações
+- **seaborn**: Visualizações estatísticas avançadas
 - **Jupyter Notebook**: Ambiente de desenvolvimento interativo
 
 ---
@@ -182,10 +222,11 @@ Execute todas as células. Isso irá:
 ## Próximos Passos
 
 - Validação dos dados extraídos contra gabarito oficial
-- Análise exploratória dos dados estruturados
-- Visualizações e estatísticas descritivas
+- Modelos inferenciais (regressão OLS) para prever valores de danos
+- Análise de correlação entre flags textuais e valores deferidos
 - Refinamento das técnicas de extração baseado em feedback
-- Análise de padrões e tendências nos casos de crédito consignado
+- Análise de padrões e tendências nos casos de crédito consignado por região e tipo de vara
+- Estudo de jurisprudência com base nos valores morais/materiais extraídos
 
 ---
 

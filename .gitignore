@@ -26,6 +26,16 @@ __pycache__/
 /entrega6/*.csv
 /entrega5/*.xlsx
 /entrega5/*.csv
+/*.xlsx
+/*/*.xlsx
+/*.csv
+/*/*.csv
+/*/*.png 
+/*/*.jpg
+
+
+# ignorar pasta backup
+/backup-files/
 
 ## Output gerado
 /output/
@@ -66,4 +76,5 @@ dist/
 ## Misc
 pip-log.txt
 pip-delete-this-directory.txt
+
  
